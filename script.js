@@ -81,29 +81,18 @@ function createAudio() {
   state.audio = { ctx, gain, nodes: [] };
   return state.audio;
 }
+
 function stopSoundscape() {
-  if (!state.audio) return;
-  state.audio.nodes.forEach((node) => { try { node.stop(); } catch (_) {} });
-  state.audio.nodes = [];
+    Object.values(ambience).forEach(sound => {
+        sound.pause();
+        sound.currentTime = 0;
+    });
 }
-function startSoundscape(kind = 'soft') {
-  if (!state.soundOn) return;
-  const audio = createAudio();
-  if (!audio) return;
-  audio.ctx.resume();
-  stopSoundscape();
-  const tones = kind === 'festival' ? [55, 82.4, 110] : kind === 'train' ? [58, 87] : [130.8];
-  tones.forEach((frequency, i) => {
-    const osc = audio.ctx.createOscillator();
-    const local = audio.ctx.createGain();
-    osc.type = kind === 'festival' ? (i === 0 ? 'sawtooth' : 'sine') : 'sine';
-    osc.frequency.value = frequency;
-    local.gain.value = kind === 'festival' ? 0.11 / (i + 1) : 0.09 / (i + 1);
-    osc.connect(local).connect(audio.gain);
-    osc.start();
-    audio.nodes.push(osc);
-  });
+
+function startSoundscape() {
+    // більше нічого не робить
 }
+
 function chirp() {
   if (!state.soundOn) return;
   const audio = createAudio();
@@ -118,12 +107,35 @@ function chirp() {
   osc.connect(gain).connect(audio.gain); osc.start(); osc.stop(audio.ctx.currentTime + .22);
 }
 soundButton.addEventListener('click', () => {
-  state.soundOn = !state.soundOn;
-  soundButton.classList.toggle('is-on', state.soundOn);
-  soundButton.setAttribute('aria-pressed', state.soundOn);
-  soundButton.setAttribute('aria-label', state.soundOn ? 'Вимкнути звук' : 'Увімкнути звук');
-  if (state.soundOn) startSoundscape(state.chapter === 5 ? 'festival' : state.chapter === 3 ? 'train' : 'soft');
-  else stopSoundscape();
+
+    state.soundOn = !state.soundOn;
+
+    soundButton.classList.toggle('is-on', state.soundOn);
+
+    soundButton.setAttribute('aria-pressed', state.soundOn);
+
+    soundButton.setAttribute(
+        'aria-label',
+        state.soundOn ? 'Вимкнути звук' : 'Увімкнути звук'
+    );
+
+    if (!state.soundOn) {
+        stopSoundscape();
+        return;
+    }
+
+    if (state.chapter === 2) {
+        playAmbience("station");
+    }
+
+    if (state.chapter === 3) {
+        playAmbience("train");
+    }
+
+    if (state.chapter === 5) {
+        playAmbience("festival");
+    }
+
 });
 
 function renderStart() {
