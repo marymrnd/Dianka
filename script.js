@@ -9,6 +9,29 @@ const wait = (ms) => new Promise((resolve) => state.timers.push(setTimeout(resol
 const $$ = (selector, root = stage) => [...root.querySelectorAll(selector)];
 const $ = (selector, root = stage) => root.querySelector(selector);
 
+const ambience = {
+    station: new Audio("sounds/station.mp3"),
+    train: new Audio("sounds/train.mp3"),
+    festival: new Audio("sounds/festival.mp3")
+};
+
+Object.values(ambience).forEach(sound => {
+    sound.loop = true;
+    sound.volume = 0.35;
+    sound.preload = "auto";
+});
+
+function playAmbience(name) {
+    Object.values(ambience).forEach(sound => {
+        sound.pause();
+        sound.currentTime = 0;
+    });
+
+    if (!state.soundOn) return;
+
+    ambience[name]?.play().catch(() => {});
+}
+
 function clearTimers() {
   state.timers.forEach(clearTimeout);
   state.timers = [];
@@ -137,7 +160,7 @@ function renderRoute() {
 }
 
 function renderStation() {
-  startSoundscape('soft');
+  playAmbience("station");
   const el = scene(`
     <div class="station-name"><div><span class="eyebrow">Платформа 3</span><h1 class="scene-title">Schwerin<br>Hbf.</h1></div><span class="station-time">10:04</span></div>
     <div class="departure-board"><p>RE1&nbsp;&nbsp; Hamburg Hbf</p><span>10:19</span><p>за 15 хв</p><span>●</span></div>
@@ -156,7 +179,7 @@ function renderStation() {
 }
 
 function renderTrain() {
-  startSoundscape('train');
+  playAmbience("train");
   const el = scene(`
     <div class="train-header"><span class="eyebrow">RE1 · В дорозі</span><span class="delay">+6 хв</span></div>
     <div class="delay-notice"><strong>+6 хв</strong><span>Невелика затримка</span></div>
@@ -183,7 +206,7 @@ function renderTrain() {
 }
 
 function renderHamburg() {
-  startSoundscape('soft');
+  Object.values(ambience).forEach(sound => sound.pause());
   const el = scene(`
     <div class="hamburg-map"></div><div class="walk-head"><div><span class="eyebrow">Hamburg · 19.09</span><h1 class="scene-title">Місто<br>попереду.</h1></div><span class="eyebrow">11 km</span></div>
     <div class="walk-photo"><div class="cityline"><i style="--h:54%"></i><i style="--h:79%"></i><i style="--h:66%"></i><i style="--h:92%"></i><i style="--h:61%"></i><i style="--h:74%"></i><i style="--h:47%"></i></div><i class="flash"></i></div>
@@ -198,7 +221,7 @@ function renderHamburg() {
 }
 
 function renderFestival() {
-  startSoundscape('festival');
+  playAmbience("festival");
   const el = scene(`
     <div class="dance-orb"></div><div class="festival-stage"><i></i><i></i><i></i></div><div class="crowd"></div>
     <div class="festival-label"><p class="eyebrow">St. Pauli · Hamburg</p><h1 class="festival-name">REEPERBAHN<br>FESTIVAL</h1><p class="festival-year">19 SEPTEMBER 2026</p></div>
@@ -221,7 +244,7 @@ function renderFestival() {
 }
 
 function renderEnvelope() {
-  app.classList.remove('has-light'); stopSoundscape();
+  app.classList.remove('has-light'); Object.values(ambience).forEach(sound => sound.pause());
   const el = scene(`
     <div class="envelope-wrap"><div class="envelope-letter"><p>Невелика пригода<br>для великих спогадів.</p></div><div class="envelope"></div><div class="envelope-flap"></div><div class="seal">♡</div></div>
     <div class="pull-up"><i class="pull-arrow"></i><span>Потягни вгору</span></div>

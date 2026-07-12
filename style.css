@@ -65,7 +65,7 @@ button { color: inherit; font: inherit; border: 0; cursor: pointer; }
 /* Portrait-led meeting: personal images can replace the initials without returning to cartoon figures. */
 .traveler { position:absolute; z-index:2; bottom:16%; display:grid; justify-items:center; gap:7px; opacity:0; transition:opacity .55s ease, left 1.35s var(--spring), right 1.35s var(--spring), transform 1.35s var(--spring); }
 .traveler .portrait { width:52px; height:52px; display:grid; place-items:center; border:2px solid rgba(255,255,255,.76); border-radius:50%; box-shadow:0 0 0 6px rgba(255,255,255,.055),0 11px 25px rgba(0,0,0,.35); color:#fff; font:500 14px "DM Mono",monospace; overflow:hidden; background-position:center; background-size:cover; }
-.portrait--maria { background-image:url("assets/maria.jpeg"); background-position:50% 48%; }.portrait--diana { background-image:url("assets/diana.jpeg"); background-position:50% 47%; }
+.portrait--maria { background-image:url("maria.jpeg"); background-position:50% 48%; }.portrait--diana { background-image:url("diana.jpeg"); background-position:50% 47%; }
 .portrait--maria span, .portrait--diana span { opacity:0; }
 .traveler p { margin:0; color:rgba(255,255,255,.66); font:9px "DM Mono",monospace; letter-spacing:.08em; text-transform:uppercase; }
 .traveler.maria { left:-84px; transform:translateY(9px) scale(.92); }.traveler.diana { right:-84px; transform:translateY(-2px) scale(.96); }
